@@ -1,0 +1,8 @@
+# Per-machine identity (Garnet writes this itself on first use, and adds
+# these same entries automatically — listed here too so a fresh clone never
+# has a window where it could be committed by accident).
+.garnet.local.yaml
+
+# Code cloned by Garnet's project repos. Never part of this workspace's own
+# history — the workspace tracks issues/docs, not the code they're about.
+repos/
