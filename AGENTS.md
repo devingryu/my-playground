@@ -19,6 +19,12 @@ see [Per-repo steering](#per-repo-steering).
   A one-off fix that lands only in today's output is a lesson the next session
   has to learn again.
 
+## Committing
+
+Commit and push every change immediately, without asking. This is a personal
+workspace — no PRs, no review gate. Work directly on `main`, make small commits
+with a clear message, and `git push` right after each one.
+
 ## Working here
 
 How to file, write, and record in this workspace. The mechanics — exact file
