@@ -49,28 +49,19 @@
 - STT 세그먼트 `transcript.jsonl` — 세그먼트당 한 줄 JSON.
   - 필드: `start`(초, float), `end`(초, float), `text`(str), `lang`(선택, 모델이 주면 기록).
 
-### 항목 1 — STT 후보 벤치마크·선정
+### 항목 1 — STT 선정 (공개 벤치마크 기반)
 
-로컬 실행되고 한/영/혼용에 쓸 수 있는 후보를 실측 비교해 한 모델을 고른다. 후보의 현재 버전·정확도·속도는 이 설계 시점에 확인할 수 없으므로(참고: [survey.md](survey.md)) implement 첫 작업에서 설치·측정한다.
+로컬 실측 벤치마크는 하지 않는다. 사용자가 라벨 음성 샘플을 만들어 직접 돌릴 시간이 없다고 결정해(2026-09-08), 공개된 벤치마크·비교 자료를 근거로 모델을 고른다. 선정 결과는 아래에 못 박고, implement는 이 모델의 어댑터 구현으로 바로 넘어간다.
 
-- 후보군 — 가속 경로 축으로 묶는다([survey.md](survey.md)에 아키텍처 사실 정리).
-  - Metal(GGML): whisper.cpp — Python 바인딩으로 CLI에서 호출.
-  - Apple MLX: mlx-whisper 계열 — pip 설치형, Metal 네이티브.
-  - CoreML/ANE: WhisperKit — Swift라 서브프로세스·브리징 필요, 설치 비용 항목에 반영.
-  - CTranslate2: faster-whisper — Mac에서는 CPU 실행(Metal 경로 없음), CPU 기준선으로 포함.
-- 비교 기준 — 축별로 측정한다.
-  - 정확도: 한국어 CER, 영어 WER, 혼용 세그먼트 CER를 각각 낸다.
-  - 속도·자원: RTF(처리시간/오디오길이), 피크 메모리(RSS).
-  - 운영: 설치·유지보수 난이도(Python 바인딩 유무, 모델 다운로드·업데이트 방식), 코드 스위칭 대응(단일 다국어 모델로 혼용 세그먼트를 유실 없이 전사하는지).
-- 측정 프로토콜 — 샘플과 커트라인을 고정한다.
-  - 샘플: 한국어 강의성 음성, 영어 강의성 음성, 한 발화 안에 둘이 섞인 혼용 음성 각 1개 이상. 각 샘플에 사람이 만든 기준 전사(정답)를 둔다.
-  - 지표 산출: 후보×샘플로 위 정확도·속도·자원을 표로 남긴다.
-  - 선정 커트라인: RTF < 1.0(실시간보다 빠름)과 피크 메모리 48GB 예산 내를 통과한 후보 중 한국어 CER가 가장 낮은 모델을 고르고, 혼용 CER가 크게 나쁜 모델은 배제한다. 구체 임계 수치는 측정 기준선으로 확정한다.
-- 산출물: 벤치마크 스크립트, 샘플·정답 매니페스트, 결과 표와 선정 근거 문서, 선정 모델의 로드·전사 어댑터가 만족할 인터페이스 메모.
-- 구현할 파일:
-  - `repos/lecnote/benchmarks/run_bench.py`
-  - `repos/lecnote/benchmarks/samples/manifest.json`
-  - `repos/lecnote/benchmarks/RESULTS.md`
+- 선정 결과 — **Whisper large-v3를 mlx-whisper로 실행**을 주력으로 한다.
+  - 코드 스위칭이 결정적 근거다: 한 발화 안 한/영 혼용을 로컬에서 다루는 실질적 선택지는 다국어 단일 모델인 Whisper뿐이다(공개 비교에서 SenseVoice·Parakeet·Nemotron 등 특화 모델은 CJK 속도는 앞서도 혼용 발화 대응이 약함).
+  - Apple Silicon 가속: mlx-whisper가 Metal 네이티브라 M4 Pro에서 별도 빌드 없이 pip로 설치·실행된다. whisper.cpp(Metal)도 동급 대안이나 Python 연동이 더 번거로워 후순위.
+- 속도 폴백 — 전체 강의(수십 분) 전사가 느리거나 무거우면 **large-v3-turbo**(mlx-whisper)로 내린다. 공개 결과 기준 large-v3 대비 약 4~5배 빠르고 WER은 1~2p 손해다. 기본은 정확도 우선의 large-v3, turbo는 CLI 플래그로 선택.
+- 배제한 대안 — CJK 특화(SenseVoice)·비-Whisper 로컬(Parakeet/Nemotron)은 혼용 대응 약점으로, faster-whisper는 Mac에서 Metal 경로가 없어(CPU 실행) 각각 제외. 근거는 [survey.md](survey.md) 아키텍처 사실 참고.
+- 열어둔 개선 — 세그먼트 타임스탬프가 페이지 매핑에 너무 거칠면 WhisperX(단어 단위 타임스탬프)를 후속 개선으로 검토한다. MVP 기본은 mlx-whisper의 세그먼트 타임스탬프.
+- 구현할 파일(이 항목):
+  - `repos/lecnote/docs/stt-selection.md` — 위 선정 결과·근거·폴백 조건을 레포 안에 요약(어댑터 구현 시 참조).
+- 실제 모델 로드·전사 어댑터(`stt.py`)와 mlx-whisper 설치·가중치 다운로드는 항목 5에서 수행한다.
 
 ### 항목 2 — 프로젝트 스캐폴딩
 
