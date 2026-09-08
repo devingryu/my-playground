@@ -9,3 +9,4 @@ timeline:
   - {at: 2026-09-08T06:19:25Z, by: devingryu@korea.ac.kr, kind: note, body: "에픽 생성 — feature-pipeline requirements 단계 시작."}
   - {at: 2026-09-08T06:40:00Z, by: devingryu@korea.ac.kr, kind: status, from: todo, to: in-progress}
   - {at: 2026-09-08T06:40:00Z, by: devingryu@korea.ac.kr, kind: note, body: "requirements.md Confirmed — design 단계 시작. STT 벤치마크 선정이 첫 작업."}
+  - {at: 2026-09-08T07:00:00Z, by: devingryu@korea.ac.kr, kind: note, body: "design.md Confirmed (레포명 lecnote 확정) — implement 단계 시작. 스캐폴딩(항목 2)부터 진행."}
