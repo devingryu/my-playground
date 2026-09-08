@@ -2,7 +2,7 @@
 
 - 작성일: 2026-09-08
 - 작성자: devingryu@korea.ac.kr
-- 상태: Draft
+- 상태: Confirmed
 - 관련 티켓: DVRY-1
 
 ## 배경 (Background)
