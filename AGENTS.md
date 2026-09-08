@@ -124,7 +124,7 @@ agent working inside one repo alone still finds it.
 
 | Repo | Steering |
 |---|---|
-| `<repo-name>` | [`<repo-name>.md`](.agents/steering/<repo-name>.md) |
+| `lecnote` | [`lecnote.md`](.agents/steering/lecnote.md) |
 
 Editing something a steering file describes? Fix it in the same commit, same as
 any other doc here.

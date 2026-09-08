@@ -10,3 +10,4 @@ timeline:
   - {at: 2026-09-08T06:40:00Z, by: devingryu@korea.ac.kr, kind: status, from: todo, to: in-progress}
   - {at: 2026-09-08T06:40:00Z, by: devingryu@korea.ac.kr, kind: note, body: "requirements.md Confirmed — design 단계 시작. STT 벤치마크 선정이 첫 작업."}
   - {at: 2026-09-08T07:00:00Z, by: devingryu@korea.ac.kr, kind: note, body: "design.md Confirmed (레포명 lecnote 확정) — implement 단계 시작. 스캐폴딩(항목 2)부터 진행."}
+  - {at: 2026-09-08T07:15:00Z, by: devingryu@korea.ac.kr, kind: note, body: "implement 항목 2(스캐폴딩) 완료 — repos/lecnote 생성(gitignored), CLI 뼈대·session 데이터계약·steering 등록. 항목 1(STT 벤치마크)은 라벨 음성 샘플·모델 다운로드 게이트로 사용자 확인 대기."}

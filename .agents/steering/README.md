@@ -9,7 +9,7 @@ what already holds), isn't a procedure, and isn't an account of an incident.
 
 | Repo | Steering |
 |---|---|
-| `<repo-name>` | [`<repo-name>.md`](<repo-name>.md) |
+| `lecnote` | [`lecnote.md`](lecnote.md) |
 
 Add one row per repo under `repos/` that has conventions worth writing down.
 Not every repo needs one — a repo with no real conventions of its own, or one
